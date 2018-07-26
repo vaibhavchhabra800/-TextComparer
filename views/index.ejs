@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Text Comparer</title>
+    <link rel="stylesheet" href="/assets/styles/styles.css" type="text/css">
+</head>
+<body>
+<%include partials/navbar.ejs %>
+<div id="test">THIS IS A TEST WA </div>
+<div id="test">THIS IS A TEST WA </div>
+<div id="test1"><pre>Hello my name 2 i                   s vaiasdvasdasd</pre></div>
+<div id="test2"><pre>Hello my   name 3 is vaiasdvasdasd</pre></div>
+
+
+    <meta charset="utf-8">
+    <title>Diff</title>
+    <link rel="stylesheet" href="http://incaseofstairs.com/jsdiff/style.css"/>
+
+<body>
+
+<div id="settings">
+    <h1>Diff</h1>
+    <label><input type="radio" name="diff_type" value="diffChars" checked> Chars</label>
+    <label><input type="radio" name="diff_type" value="diffWords"> Words</label>
+    <label><input type="radio" name="diff_type" value="diffLines"> Lines</label>
+</div>
+
+<a href="https://github.com/kpdecker/jsdiff" class="source">github.com/kpdecker/jsdiff</a>
+
+<table>
+    <tr>
+        <td contenteditable="true" id="a">restaurant</td>
+        <td contenteditable="true" id="b">aura</td>
+        <td><pre id="result"></pre></td>
+    </tr>
+</table>
+
+<script src="http://incaseofstairs.com/jsdiff/diff.js"></script>
+<script defer>
+    var a = document.getElementById('a');
+    var b = document.getElementById('b');
+    var result = document.getElementById('result');
+
+    function changed() {
+        var diff = JsDiff[window.diffType](a.textContent, b.textContent);
+        var fragment = document.createDocumentFragment();
+        for (var i=0; i < diff.length; i++) {
+
+            if (diff[i].added && diff[i + 1] && diff[i + 1].removed) {
+                var swap = diff[i];
+                diff[i] = diff[i + 1];
+                diff[i + 1] = swap;
+            }
+
+            var node;
+            if (diff[i].removed) {
+                node = document.createElement('del');
+                node.appendChild(document.createTextNode(diff[i].value));
+            } else if (diff[i].added) {
+                node = document.createElement('ins');
+                node.appendChild(document.createTextNode(diff[i].value));
+            } else {
+                node = document.createTextNode(diff[i].value);
+            }
+            fragment.appendChild(node);
+        }
+
+        result.textContent = '';
+        result.appendChild(fragment);
+    }
+
+    window.onload = function() {
+        onDiffTypeChange(document.querySelector('#settings [name="diff_type"]:checked'));
+        changed();
+    };
+
+    a.onpaste = a.onchange =
+        b.onpaste = b.onchange = changed;
+
+    if ('oninput' in a) {
+        a.oninput = b.oninput = changed;
+    } else {
+        a.onkeyup = b.onkeyup = changed;
+    }
+
+    function onDiffTypeChange(radio) {
+        window.diffType = radio.value;
+        document.title = "Diff " + radio.value.slice(4);
+    }
+
+    var radio = document.getElementsByName('diff_type');
+    for (var i = 0; i < radio.length; i++) {
+        radio[i].onchange = function(e) {
+            onDiffTypeChange(e.target);
+            changed();
+        }
+    }
+</script>
+</body>
+</html>
+
+
+
+
+
+
